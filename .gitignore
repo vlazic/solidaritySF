@@ -24,5 +24,3 @@
 ###> phpstan/phpstan ###
 phpstan*neon
 ###< phpstan/phpstan ###
-
-.editorconfig
