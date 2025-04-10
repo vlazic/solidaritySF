@@ -2,8 +2,8 @@
 
 namespace App\Validator;
 
-use libphonenumber\PhoneNumberUtil;
 use libphonenumber\NumberParseException;
+use libphonenumber\PhoneNumberUtil;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
@@ -23,6 +23,7 @@ class PhoneValidator extends ConstraintValidator
         if (!is_string($value) || '' === $value) {
             $this->context->buildViolation($constraint->message)
                 ->addViolation();
+
             return;
         }
 
@@ -43,7 +44,7 @@ class PhoneValidator extends ConstraintValidator
             }
 
             // Convert to international format for libphonenumber
-            $phoneNumber = '+381' . substr($phoneNumber, 1);
+            $phoneNumber = '+381'.substr($phoneNumber, 1);
 
             $numberProto = $phoneUtil->parse($phoneNumber, 'RS');
 

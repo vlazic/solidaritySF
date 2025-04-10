@@ -4,9 +4,9 @@ namespace App\Tests\Validator;
 
 use App\Validator\Phone;
 use App\Validator\PhoneValidator;
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Violation\ConstraintViolationBuilderInterface;
 

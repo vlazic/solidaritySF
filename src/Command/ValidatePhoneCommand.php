@@ -18,7 +18,7 @@ class ValidatePhoneCommand extends Command
 
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private ValidatorInterface $validator
+        private ValidatorInterface $validator,
     ) {
         parent::__construct();
     }
@@ -35,7 +35,7 @@ class ValidatePhoneCommand extends Command
         foreach ($requests as $request) {
             $violations = $this->validator->validate($request->getPhone(), $phoneConstraint);
             if (count($violations) > 0) {
-                $invalidCount++;
+                ++$invalidCount;
                 $io->error(sprintf(
                     'Invalid phone number found in UserDelegateRequest (ID: %d): %s',
                     $request->getId(),
@@ -46,10 +46,12 @@ class ValidatePhoneCommand extends Command
 
         if ($invalidCount > 0) {
             $io->warning(sprintf('Validation completed. Found %d invalid phone numbers.', $invalidCount));
+
             return Command::FAILURE;
         }
 
         $io->success('All phone numbers are valid.');
+
         return Command::SUCCESS;
     }
 }
