@@ -51,11 +51,11 @@ $ chmod +x .git/hooks/pre-push
 ```
 
 Ova podešavanja će automatski pokrenuti proveru koda pre svakog push-a:
-- Provera sintakse Twig šablona
-- Provera sintakse YAML konfiguracije
+- Provera sintakse Twig templtes
+- Provera sintakse YAML konfiguracionih fajlova
 - Provera Symfony container-a
 - PHPStan statička analiza
-- PHP CS Fixer provera stila
+- PHP CS Fixer provera sintakse i stilskih pravila
 
 Možete i ručno pokrenuti sve provere pomoću komande:
 ```bash
@@ -64,7 +64,7 @@ $ docker exec solidarity-php-container php bin/console app:lint:all
 
 ---
 
-### Test korisnici
+## Test korisnici
 
 Test korisnici se automatski kreiraju pomoću [DoctrineFixturesBundle](https://symfony.com/bundles/DoctrineFixturesBundle) tokom pokretanja skripte za konfiguraciju.
 
