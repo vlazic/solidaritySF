@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use App\Validator\Mod97;
 
 #[ORM\Entity(repositoryClass: EducatorRepository::class)]
 #[UniqueEntity(fields: ['accountNumber'], message: 'Vec postoji edukator sa ovim brojem računa')]
@@ -30,6 +31,7 @@ class Educator
     private ?int $amount = null;
 
     #[ORM\Column(length: 50, unique: true)]
+    #[Mod97]
     private ?string $accountNumber = null;
 
     #[ORM\ManyToOne(inversedBy: 'educators')]
