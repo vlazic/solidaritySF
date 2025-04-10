@@ -21,6 +21,7 @@ class Mod97Validator extends ConstraintValidator
         if (!is_string($value) || '' === $value) {
             $this->context->buildViolation($constraint->message)
                 ->addViolation();
+
             return;
         }
 
@@ -41,8 +42,8 @@ class Mod97Validator extends ConstraintValidator
     {
         $controlNumber = 0;
 
-        for ($x = strlen($accountNumber)-1; $x >= 0; $x--) {
-            $num = (int)$accountNumber[$x];
+        for ($x = strlen($accountNumber) - 1; $x >= 0; --$x) {
+            $num = (int) $accountNumber[$x];
             $controlNumber = ($controlNumber + ($base * $num)) % 97;
             $base = ($base * 10) % 97;
         }
