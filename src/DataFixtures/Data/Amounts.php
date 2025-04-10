@@ -33,6 +33,6 @@ class Amounts
         $max = $max ?? ($baseAmount * 50);   // Default 50x base
         $amount = max($min, min($max, $amount));
 
-        return round($amount / 100) * 100;
+        return (int) (round($amount / 100) * 100);
     }
 }

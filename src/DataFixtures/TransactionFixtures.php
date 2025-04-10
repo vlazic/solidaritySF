@@ -17,17 +17,6 @@ class TransactionFixtures extends Fixture implements FixtureGroupInterface
     {
     }
 
-    private function generateRandomDate(): \DateTimeImmutable
-    {
-        // Get a date between now and 2 months ago
-        $end = new \DateTimeImmutable();
-        $start = $end->modify('-2 months');
-
-        $timestamp = mt_rand($start->getTimestamp(), $end->getTimestamp());
-
-        return (new \DateTimeImmutable())->setTimestamp($timestamp);
-    }
-
     public function load(ObjectManager $manager): void
     {
         // Set fixed seed for deterministic results
@@ -59,8 +48,6 @@ class TransactionFixtures extends Fixture implements FixtureGroupInterface
                 // Use educator's account number
                 $transaction->setAccountNumber($educator->getAccountNumber());
 
-                // Set random date in last 2 months
-                $transaction->setCreatedAt($this->generateRandomDate());
                 $manager->persist($transaction);
             }
         }
