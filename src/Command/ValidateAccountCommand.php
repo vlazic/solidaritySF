@@ -18,7 +18,7 @@ class ValidateAccountCommand extends Command
 
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private ValidatorInterface $validator
+        private ValidatorInterface $validator,
     ) {
         parent::__construct();
     }
@@ -34,7 +34,7 @@ class ValidateAccountCommand extends Command
         foreach ($educators as $educator) {
             $violations = $this->validator->validate($educator->getAccountNumber(), $mod97Constraint);
             if (count($violations) > 0) {
-                $invalidCount++;
+                ++$invalidCount;
                 $io->error(sprintf(
                     'Invalid account number found in Educator (ID: %d, Name: %s): %s',
                     $educator->getId(),
@@ -46,10 +46,12 @@ class ValidateAccountCommand extends Command
 
         if ($invalidCount > 0) {
             $io->warning(sprintf('Validation completed. Found %d invalid account numbers.', $invalidCount));
+
             return Command::FAILURE;
         }
 
         $io->success('All account numbers are valid.');
+
         return Command::SUCCESS;
     }
 }
