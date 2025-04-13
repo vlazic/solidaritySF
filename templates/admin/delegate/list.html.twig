@@ -33,7 +33,7 @@
             {% for delegate in delegates.items %}
                 <tr class="hover:bg-base-200">
                     <td>
-                        <div>{{ delegate.fullName }}</div>
+                        <div>{{ delegate.fullName ?? user.username }}</div>
                         <a href="{{ path('admin_user_edit', { 'id': delegate.id }) }}" class="link link-primary link-hover">
                             {{ delegate.email }}
                         </a>
