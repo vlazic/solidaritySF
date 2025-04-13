@@ -39,12 +39,15 @@ class AccountNumberTransformerTest extends TestCase
     {
         return [
             'null value returns null' => [null, null],
-            // Test cases with dashes
-            'account with dashes 1' => ['160-462754-78', '160000000046275478'],
-            'account with dashes 2' => ['325-950050-02', '325000000095005002'],
-            // Test cases without dashes but needs padding
-            'account without dashes needs padding 1' => ['16046275478', '160000000046275478'],
-            'account without dashes needs padding 2' => ['32595005002', '325000000095005002'],
+            // Test cases with special characters and spaces
+            'account with dashes' => ['160-462754-78', '160000000046275478'],
+            'account with dashes and spaces' => ['160 - 462754 - 78', '160000000046275478'],
+            'account with multiple spaces' => ['325  950050  02', '325000000095005002'],
+            'account with special characters' => ['160.462754#78', '160000000046275478'],
+            'account with mixed characters' => ['160--462.754..78', '160000000046275478'],
+            // Test cases without special characters but needs padding
+            'account without special chars needs padding 1' => ['16046275478', '160000000046275478'],
+            'account without special chars needs padding 2' => ['32595005002', '325000000095005002'],
             // Already properly formatted numbers
             'already 18 digits 1' => ['265104031000361092', '265104031000361092'],
             'already 18 digits 2' => ['150000002501288698', '150000002501288698'],

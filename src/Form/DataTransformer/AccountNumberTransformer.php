@@ -21,17 +21,27 @@ class AccountNumberTransformer implements DataTransformerInterface
             return null;
         }
 
-        // Remove any dashes from the account number
-        $cleanNumber = str_replace('-', '', $value);
+        $numbersOnly = preg_replace('/\D/', '', $value);
 
-        // If length is less than 18, pad with zeros after the first 3 digits
-        if (strlen($cleanNumber) < 18) {
-            $prefix = substr($cleanNumber, 0, 3);
-            $rest = substr($cleanNumber, 3);
-            $paddedRest = str_pad($rest, 15, '0', STR_PAD_LEFT);
-            $cleanNumber = $prefix.$paddedRest;
+        if (18 === strlen($numbersOnly)) {
+            return $numbersOnly;
         }
 
-        return $cleanNumber;
+        $parts = [
+            substr($numbersOnly, 0, 3),
+            substr($numbersOnly, 3, -2),
+            substr($numbersOnly, -2),
+        ];
+
+        if (strlen($parts[1]) < 13) {
+            $parts[1] = str_pad(
+                $parts[1],
+                13,
+                '0',
+                STR_PAD_LEFT
+            );
+        }
+
+        return join('', $parts);
     }
 }
