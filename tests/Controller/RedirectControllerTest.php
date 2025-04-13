@@ -18,7 +18,7 @@ class RedirectControllerTest extends WebTestCase
             '/obrazacDonatori',
             '/obrazacDelegati',
             '/profileDelegat',
-            '/obrazacOsteceni'
+            '/obrazacOsteceni',
         ];
 
         foreach ($urls as $url) {
