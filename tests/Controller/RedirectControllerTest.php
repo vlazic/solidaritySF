@@ -11,9 +11,21 @@ class RedirectControllerTest extends WebTestCase
     // and have identical behavior (301 redirect to homepage)
     public function testLegacyUrlRedirectsToHome(): void
     {
-        $client = static::createClient();
-        $client->request('GET', '/hvalaDonatoru');
+        $urls = [
+            '/hvalaDonatoru',
+            '/hvalaDelegatu',
+            '/hvalaZaOstecenog',
+            '/obrazacDonatori',
+            '/obrazacDelegati',
+            '/profileDelegat',
+            '/obrazacOsteceni'
+        ];
 
-        $this->assertResponseRedirects('/', Response::HTTP_MOVED_PERMANENTLY);
+        foreach ($urls as $url) {
+            $client = static::createClient();
+            $client->request('GET', $url);
+
+            $this->assertResponseRedirects('/', Response::HTTP_MOVED_PERMANENTLY);
+        }
     }
 }
