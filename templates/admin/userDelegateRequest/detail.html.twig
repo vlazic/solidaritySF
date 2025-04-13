@@ -62,7 +62,11 @@
                     </div>
                     <div>
                         <div class="text-sm text-gray-500">Email</div>
-                        <div>{{ userDelegateRequest.user.email }}</div>
+                        <div>
+                            <a href="{{ path('admin_user_edit', { 'id': userDelegateRequest.user.id }) }}" class="link link-primary link-hover">
+                                {{ userDelegateRequest.user.email }}
+                            </a>
+                        </div>
                     </div>
                     <div>
                         <div class="text-sm text-gray-500">Broj telefona</div>
