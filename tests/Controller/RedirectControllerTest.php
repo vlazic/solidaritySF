@@ -21,10 +21,9 @@ class RedirectControllerTest extends WebTestCase
             '/obrazacOsteceni',
         ];
 
+        $client = static::createClient();
         foreach ($urls as $url) {
-            $client = static::createClient();
             $client->request('GET', $url);
-
             $this->assertResponseRedirects('/', Response::HTTP_MOVED_PERMANENTLY);
         }
     }
