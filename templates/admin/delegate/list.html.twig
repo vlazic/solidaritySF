@@ -33,12 +33,10 @@
             {% for delegate in delegates.items %}
                 <tr class="hover:bg-base-200">
                     <td>
-                        <div>
-                            <a href="{{ path('admin_user_edit', {'id': delegate.id}) }}" class="link link-hover">
-                                {{ delegate.fullName }}
-                            </a>
-                        </div>
-                        <div class="text-sm text-gray-500">{{ delegate.email }}</div>
+                        <div>{{ delegate.fullName }}</div>
+                        <a href="{{ path('admin_user_edit', { 'id': delegate.id }) }}" class="link link-primary link-hover">
+                            {{ delegate.email }}
+                        </a>
                     </td>
                     <td>{{ delegate.userDelegateSchools|length }}</td>
                     <td>

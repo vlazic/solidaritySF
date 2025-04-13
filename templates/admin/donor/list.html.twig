@@ -36,12 +36,10 @@
             {% for donor in donors.items %}
                 <tr class="hover:bg-base-200">
                     <td>
-                        <div>
-                            <a href="{{ path('admin_user_edit', {'id': donor.user.id}) }}" class="link link-hover">
-                                {{ donor.user.fullName ?? donor.user.username }}
-                            </a>
-                        </div>
-                        <div class="text-sm text-gray-500">{{ donor.user.email }}</div>
+                        <div>{{ donor.user.fullName ?? donor.user.username }}</div>
+                        <a href="{{ path('admin_user_edit', { 'id': donor.user.id }) }}" class="link link-primary link-hover">
+                            {{ donor.user.email }}
+                        </a>
                     </td>
                     <td>
                         {% if donor.isMonthly %}

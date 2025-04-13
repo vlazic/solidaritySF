@@ -37,12 +37,10 @@
                     <tr class="hover:bg-base-200">
                         <th>{{ user.id }}</th>
                         <td>
-                            <div>
-                                <a href="{{ path('admin_user_edit', {'id': user.id}) }}" class="link link-hover">
-                                    {{ user.fullName }}
-                                </a>
-                            </div>
-                            <div class="text-sm text-gray-500">{{ user.email }}</div>
+                            <div>{{ user.fullName }}</div>
+                            <a href="{{ path('admin_user_edit', { 'id': user.id }) }}" class="link link-primary link-hover">
+                                {{ user.email }}
+                            </a>
                         </td>
                         <td>{{ user.getRoles|roleTranslate }}</td>
                         <td>
