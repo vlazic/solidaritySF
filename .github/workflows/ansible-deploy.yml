@@ -58,4 +58,4 @@ jobs:
             --extra-vars "redis_password=${{ secrets.REDIS_PASSWORD }}"
             --extra-vars "app_secret=${{ secrets.APP_SECRET }}"
             --extra-vars "mailer_dsn=${{ secrets.MAILER_DSN }}"
-            ${{ github.event.inputs.branch && format('--extra-vars \"git_branch={0}\"', github.event.inputs.branch) || '' }}
+            --extra-vars "git_branch=${{ github.event.inputs.branch }}"
