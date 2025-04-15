@@ -8,7 +8,7 @@ on:
         required: false
         default: 'main'
       tags_app:
-        description: 'Run only app tag (code update)?'
+        description: 'Run only code update, not full redeployment?'
         required: false
         type: boolean
         default: true
@@ -48,8 +48,11 @@ jobs:
           directory: ansible
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           inventory: |
-            [all]
-            ${{ secrets.DOMAIN_NAME }}
+            [solidarity_servers]
+            ${{ secrets.DOMAIN_NAME }} ansible_user=root
+
+            [all:vars]
+            ansible_python_interpreter=/usr/bin/python3
           options: >
             ${{ github.event.inputs.tags_app == 'true' && '--tags app' || '' }}
             --extra-vars "domain_name=${{ secrets.DOMAIN_NAME }}"
