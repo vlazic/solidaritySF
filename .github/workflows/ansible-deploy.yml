@@ -58,7 +58,6 @@ jobs:
             --extra-vars "domain_name=${{ secrets.DOMAIN_NAME }}"
             --extra-vars "mysql_root_password=${{ secrets.MYSQL_ROOT_PASSWORD }}"
             --extra-vars "mysql_password=${{ secrets.MYSQL_PASSWORD }}"
-            --extra-vars "redis_password=${{ secrets.REDIS_PASSWORD }}"
             --extra-vars "app_secret=${{ secrets.APP_SECRET }}"
             --extra-vars "mailer_dsn=${{ secrets.MAILER_DSN }}"
             --extra-vars "git_branch=${{ github.event.inputs.branch }}"

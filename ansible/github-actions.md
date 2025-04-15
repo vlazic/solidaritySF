@@ -29,7 +29,6 @@ Za bezbedan deploy, potrebno je da u GitHub repozitorijumu podesite sledeće Sec
 - `DOMAIN_NAME` — domen/server na koji se deploy radi (npr. mrezasolidarnosti.org)
 - `MYSQL_ROOT_PASSWORD` — root lozinka za MySQL
 - `MYSQL_PASSWORD` — lozinka za aplikacionog korisnika baze
-- `REDIS_PASSWORD` — lozinka za Redis
 - `APP_SECRET` — aplikacioni secret
 - `MAILER_DSN` — DSN za slanje emailova
 

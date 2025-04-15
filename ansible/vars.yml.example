@@ -15,7 +15,6 @@ mysql_password: change_this_db_password
 # Redis settings
 redis_host: 127.0.0.1
 redis_port: 6379
-redis_password: change_this_redis_password
 
 # Environment settings
 app_env: prod
