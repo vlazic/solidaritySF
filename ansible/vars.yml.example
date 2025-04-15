@@ -1,7 +1,7 @@
 ---
 # Application settings
 app_root: /var/www/solidarity
-domain_name: your-domain.com
+domain_name: mrezasolidarnosti.org
 admin_email: admin@example.com
 git_repo: https://github.com/IT-Srbija-Org/solidaritySF.git
 git_branch: main
