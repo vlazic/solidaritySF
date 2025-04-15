@@ -19,6 +19,13 @@
   notify: Reload Nginx
   tags: [nginx, config]
 
+- name: Remove default Nginx site
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: Reload Nginx
+  tags: [nginx, config]
+
 - name: Set up SSL with Let's Encrypt
   ansible.builtin.command: certbot --nginx -d {{ domain_name }} --non-interactive --agree-tos --email {{ admin_email }}
   when: enable_ssl | bool
