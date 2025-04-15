@@ -24,7 +24,8 @@ mailer_sender: noreply@mrezasolidarnosti.org
 # Deployment flags
 initialize_database: true
 load_fixtures: true
-enable_ssl: true
+enable_ssl: false
+enable_ufw: false
 
 # Backup settings
 backup_dir: /backup
