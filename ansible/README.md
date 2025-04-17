@@ -99,10 +99,17 @@ cp vars.yml.example vars.yml
 
 3. Izmenite `vars.yml` i podesite vrednosti za vašu sredinu:
 
-- `app_secret` - Tajni ključ aplikacije (generišite pomoću `php bin/console secret:generate`)
+- `app_secret` - Tajni ključ aplikacije
 - `mysql_password` - Lozinka za MySQL bazu podataka
+- `mailer_dsn` - DSN za slanje emailova
+
+Opciono:
+
+- `domain_name` - Domen na kojem se aplikacija hostuje (podrazumevano je `mrezasolidarnosti.org`)
+- `mailer_sender` - Ako se testira slanje emailova sa nekog domena koji nije  mrezasolidarnosti.org, ovde treba da se unese email adresa sa tog domena
 - `admin_email` - Email za SSL sertifikat (samo ako je *enable_ssl* `true`)
--
+
+Postoji još dosta opcija koje možete podesiti u `vars.yml`, ali u većini slučajeva podrazumevane vrednosti nije potrebno menjati.
 
 ## Korišćenje
 
