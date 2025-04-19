@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Twig;
 
 use Twig\Extension\AbstractExtension;
@@ -25,7 +26,7 @@ class AccountNumberFormatExtension extends AbstractExtension
         // Remove all non-digit characters
         $digits = preg_replace('/\D+/', '', $number);
 
-        if (strlen($digits) === 18) {
+        if (18 === strlen($digits)) {
             return preg_replace('/^(\d{3})(\d{13})(\d{2})$/', '$1-$2-$3', $digits);
         }
 

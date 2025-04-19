@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Entity\Transaction;
@@ -21,22 +22,22 @@ class QrCodeController extends AbstractController
 
         $paymentData = [
             'identificationCode' => 'PR',
-            'version'            => '01',
-            'characterSet'       => '1',
-            'bankAccountNumber'  => $transaction->getAccountNumber(),
-            'payeeName'          => $transaction->getDamagedEducator()->getName(),
-            'amount'             => number_format($transaction->getAmount(), 2, ',', ''),
-            'payerName'          => $user->getFullName(),
-            'paymentCode'        => '289',
-            'paymentPurpose'     => 'Transakcija po nalogu građana',
-            'referenceCode'      => '',
+            'version' => '01',
+            'characterSet' => '1',
+            'bankAccountNumber' => $transaction->getAccountNumber(),
+            'payeeName' => $transaction->getDamagedEducator()->getName(),
+            'amount' => number_format($transaction->getAmount(), 2, ',', ''),
+            'payerName' => $user->getFullName(),
+            'paymentCode' => '289',
+            'paymentPurpose' => 'Transakcija po nalogu građana',
+            'referenceCode' => '',
         ];
 
-        $qrString  = $qrCodeService->createIpsQrString($paymentData);
+        $qrString = $qrCodeService->createIpsQrString($paymentData);
         $qrDataUri = $qrCodeService->getQrCodeDataUri($qrString);
 
         return $this->render('profile/qr_modal_content.html.twig', [
-            'qrDataUri'   => $qrDataUri,
+            'qrDataUri' => $qrDataUri,
             'transaction' => $transaction,
         ]);
     }
