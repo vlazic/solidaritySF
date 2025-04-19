@@ -96,7 +96,7 @@
                                         {% endif %}
 
 
-                                        <a href="#" class="btn btn-primary btn-sm flex tooltip" data-tip="Oštampaj">
+                                        <a href="{{ path('profile_transaction_invoice_print', { 'id': transaction.id }) }}" target="_blank" class="btn btn-primary btn-sm flex tooltip" data-tip="Oštampaj">
                                             <span class="ti ti-printer text-xl"></span>
                                         </a>
 
