@@ -18,12 +18,11 @@ class IpsQrCodeService
     public function createIpsQrString(array $data): string
     {
         $required = [
-            'identificationCode',
-            'version',
-            'characterSet',
             'bankAccountNumber',
             'payeeName',
             'amount',
+            'payerName',
+            'paymentPurpose',
         ];
 
         foreach ($required as $key) {
@@ -32,10 +31,14 @@ class IpsQrCodeService
             }
         }
 
+        $identificationCode = !empty($data['identificationCode']) ? $data['identificationCode'] : 'PR';
+        $version = !empty($data['version']) ? $data['version'] : '01';
+        $characterSet = !empty($data['characterSet']) ? $data['characterSet'] : '1';
+
         $segments = [
-            'K:'.$data['identificationCode'],
-            'V:'.$data['version'],
-            'C:'.$data['characterSet'],
+            'K:'.$identificationCode,
+            'V:'.$version,
+            'C:'.$characterSet,
             'R:'.$data['bankAccountNumber'],
             'N:'.$data['payeeName'],
             'I:RSD'.$data['amount'],

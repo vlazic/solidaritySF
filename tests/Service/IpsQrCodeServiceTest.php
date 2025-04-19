@@ -22,21 +22,20 @@ class IpsQrCodeServiceTest extends TestCase
         $this->service->createIpsQrString([]);
     }
 
-    public function testWorksWithRequiredArguments(): void
+    public function testWorksWithRequiredArgumentsAndDefaults(): void
     {
         $args = [
-            'identificationCode' => 'PR',
-            'version' => '01',
-            'characterSet' => '1',
             'bankAccountNumber' => '123456789012345611',
             'payeeName' => 'JEST Ltd., Test',
             'amount' => '1295,',
+            'payerName' => 'Test Payer',
+            'paymentPurpose' => 'Test Purpose',
         ];
-        $expected = 'K:PR|V:01|C:1|R:123456789012345611|N:JEST Ltd., Test|I:RSD1295,';
+        $expected = 'K:PR|V:01|C:1|R:123456789012345611|N:JEST Ltd., Test|I:RSD1295,|P:Test Payer|S:Test Purpose';
         $this->assertSame($expected, $this->service->createIpsQrString($args));
     }
 
-    public function testWorksWithOptionalArguments(): void
+    public function testWorksWithAllArgumentsProvided(): void
     {
         $args = [
             'identificationCode' => 'PR',
@@ -45,27 +44,25 @@ class IpsQrCodeServiceTest extends TestCase
             'bankAccountNumber' => '123456789012345611',
             'payeeName' => 'JEST Ltd., Test',
             'amount' => '1295,',
+            'payerName' => 'Test Payer',
             'paymentCode' => '123',
             'paymentPurpose' => 'Testing',
         ];
-        $expected = 'K:PR|V:01|C:1|R:123456789012345611|N:JEST Ltd., Test|I:RSD1295,|SF:123|S:Testing';
+        $expected = 'K:PR|V:01|C:1|R:123456789012345611|N:JEST Ltd., Test|I:RSD1295,|P:Test Payer|SF:123|S:Testing';
         $this->assertSame($expected, $this->service->createIpsQrString($args));
     }
 
     public function testWorksWithReferenceCode(): void
     {
         $args = [
-            'identificationCode' => 'PR',
-            'version' => '01',
-            'characterSet' => '1',
             'bankAccountNumber' => '123456789012345611',
             'payeeName' => 'JEST Ltd., Test',
             'amount' => '1295,',
-            'paymentCode' => '123',
-            'paymentPurpose' => 'Testing',
+            'payerName' => 'Test Payer',
+            'paymentPurpose' => 'Test Purpose',
             'referenceCode' => '972012345',
         ];
-        $expected = 'K:PR|V:01|C:1|R:123456789012345611|N:JEST Ltd., Test|I:RSD1295,|SF:123|S:Testing|RO:972012345';
+        $expected = 'K:PR|V:01|C:1|R:123456789012345611|N:JEST Ltd., Test|I:RSD1295,|P:Test Payer|S:Test Purpose|RO:972012345';
         $this->assertSame($expected, $this->service->createIpsQrString($args));
     }
 }

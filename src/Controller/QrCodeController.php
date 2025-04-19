@@ -21,16 +21,12 @@ class QrCodeController extends AbstractController
         }
 
         $paymentData = [
-            'identificationCode' => 'PR',
-            'version' => '01',
-            'characterSet' => '1',
             'bankAccountNumber' => $transaction->getAccountNumber(),
             'payeeName' => $transaction->getDamagedEducator()->getName(),
             'amount' => number_format($transaction->getAmount(), 2, ',', ''),
             'payerName' => $user->getFullName(),
             'paymentCode' => '289',
             'paymentPurpose' => 'Transakcija po nalogu građana',
-            'referenceCode' => '',
         ];
 
         $qrString = $qrCodeService->createIpsQrString($paymentData);
