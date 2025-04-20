@@ -129,6 +129,10 @@
         </div>
     </dialog>
 
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
     <script>
         function openQrModal(transactionId) {
             const modal = document.getElementById('qr_modal');
