@@ -24,78 +24,206 @@
 {% endmacro %}
 
 {% macro nav_links(additional_link_classes = '') %}
+    {# Desktop: right-aligned icons before dropdown, each as its own <li> #}
     {% if app.user and app.user.userDonor %}
-        <li>
-            <a href="{{ path('donor_request_form') }}" class="text-lg lg:text-base px-4 py-3 lg:py-2 lg:px-3 text-red-400 hover:text-base-100 hover:bg-red-400 lg:border lg:border-red-400 {{ additional_link_classes }}">
-                <span class="ti ti-heart-filled text-xl"></span>
-                Profil
-            </a>
-        </li>
-    {% else %}
-        <li>
-            <a href="{{ path('donor_request_form') }}" class="text-lg lg:text-base px-4 py-3 lg:py-2 lg:px-3 text-red-400 hover:text-base-100 hover:bg-red-400 lg:border lg:border-red-400 {{ additional_link_classes }}">
-                <span class="ti ti-heart text-xl"></span>
-                Postani donator
+        <li class="hidden lg:flex items-center">
+            <a href="{{ path('donor_transaction_list') }}" class="flex items-center gap-1 px-3 py-2 text-black hover:text-primary transition-colors">
+                <span class="ti ti-credit-card-pay text-xl"></span>
+                Instrukcije za uplatu
             </a>
         </li>
     {% endif %}
-
-    {% if not (app.user and 'ROLE_DELEGATE' in app.user.getRoles) %}
-        <li>
-            <a href="{{ path('delegate_request_form') }}" class="text-lg lg:text-base px-4 py-3 lg:py-2 lg:px-3 text-red-400 hover:text-base-100 hover:bg-red-400 lg:border lg:border-red-400 {{ additional_link_classes }}">
-                <span class="ti ti-user-cog text-xl"></span>
+    {% if app.user and 'ROLE_DELEGATE' in app.user.getRoles %}
+        <li class="hidden lg:flex items-center">
+            <a href="{{ path('delegate_request_form') }}" class="flex items-center gap-1 px-3 py-2 text-black hover:text-primary transition-colors">
+                <span class="ti ti-school text-xl"></span>
                 Postani delegat
             </a>
         </li>
     {% endif %}
 
-    {% if app.user %}
-        {% if app.user.userDonor %}
-            <li>
-                <a href="{{ path('donor_transaction_list') }}" class="text-lg lg:text-base px-4 py-3 lg:py-2 lg:px-3 {{ additional_link_classes }}">
-                    <span class="ti ti-credit-card-pay text-xl"></span>
-                    Instrukcije za uplatu
-                </a>
-            </li>
+    {# Desktop: dropdown or login #}
+    <li class="hidden lg:flex items-center">
+        {% if not app.user %}
+            <div class="dropdown dropdown-end">
+                <button type="button" tabindex="0" class="btn btn-ghost m-1 gap-2 {{ additional_link_classes }}">
+                    <span>Prijavi se</span>
+                    <i class="ti ti-chevron-down text-sm transition-transform duration-300 group-hover:rotate-180"></i>
+                </button>
+                <div tabindex="0" class="dropdown-content z-[1] menu p-0 shadow-lg bg-base-100 rounded-lg w-[310px] animate-slide-down">
+                    <div class="px-6 pt-6 pb-3 flex flex-col gap-4">
+                        <div class="space-y-1">
+                            <h3 class="text-xl font-medium text-gray-900">Zdravo</h3>
+                            <p class="text-xs text-gray-400">Već imaš nalog?</p>
+                        </div>
+                        <a href="{{ path('login') }}" class="btn btn-primary w-full">Prijavi se</a>
+                    </div>
+                    <div class="divider m-0 px-6"></div>
+                    <div class="px-6 pt-3 pb-6 flex flex-col gap-4">
+                        <p class="text-xs text-gray-400">Nemaš nalog?</p>
+                        <div class="space-y-3">
+                            <a href="{{ path('donor_request_form') }}" class="btn btn-outline btn-primary w-full justify-center gap-2">
+                                <i class="ti ti-user-plus"></i>
+                                <span>Postani donator</span>
+                            </a>
+                            <a href="{{ path('delegate_request_form') }}" class="btn btn-outline btn-primary w-full justify-center gap-2">
+                                <i class="ti ti-user-star"></i>
+                                <span>Postani delegat</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="dropdown dropdown-end">
+                <button type="button" tabindex="0" class="btn btn-ghost m-1 gap-2 {{ additional_link_classes }}">
+                    <span>Tvoj nalog</span>
+                    <i class="ti ti-chevron-down text-sm transition-transform duration-300 group-hover:rotate-180"></i>
+                </button>
+                <div tabindex="0" class="dropdown-content z-[1] menu p-0 shadow-lg bg-base-100 rounded-lg w-[310px] animate-slide-down">
+                    <div class="px-6 pt-6 pb-3 flex flex-col gap-4">
+                        <div class="inline-flex justify-start items-center gap-2">
+                            <i class="ti ti-user text-base"></i>
+                            <a href="{{ path('profile_edit') }}" class="text-base font-medium">Upravljaj nalogom</a>
+                        </div>
+                        <div class="inline-flex justify-start items-center gap-2">
+                            <i class="ti ti-settings text-base"></i>
+                            <a href="{{ path('profile_edit') }}" class="text-base font-medium">Izmeni korisničke podatke</a>
+                        </div>
+                    </div>
+                    <div class="divider m-0 px-6"></div>
+                    {# Donor-specific: show "Postani delegat" if not delegate #}
+                    {% if app.user.userDonor and not ('ROLE_DELEGATE' in app.user.getRoles) %}
+                        <div class="px-6 pt-3 pb-3 flex flex-col gap-4">
+                            <p class="text-xs text-gray-400">Predstavljaš kolektiv u obustavi?</p>
+                            <a href="{{ path('delegate_request_form') }}" class="btn btn-outline btn-primary w-full justify-center gap-2">
+                                <i class="ti ti-user-star"></i>
+                                <span>Postani delegat</span>
+                            </a>
+                        </div>
+                        <div class="divider m-0 px-6"></div>
+                    {% endif %}
+                    {# Regular user: show "Postani donator" and "Postani delegat" if not donor or delegate #}
+                    {% if not app.user.userDonor and not ('ROLE_DELEGATE' in app.user.getRoles) %}
+                        <div class="px-6 pt-3 pb-3 flex flex-col gap-4">
+                            <p class="text-xs text-gray-400">Želiš da se prijaviš kao donator?</p>
+                            <a href="{{ path('donor_request_form') }}" class="btn btn-outline btn-primary w-full justify-center gap-2">
+                                <i class="ti ti-user-plus"></i>
+                                <span>Postani donator</span>
+                            </a>
+                        </div>
+                        <div class="px-6 pt-3 pb-3 flex flex-col gap-4">
+                            <p class="text-xs text-gray-400">Predstavljaš kolektiv u obustavi?</p>
+                            <a href="{{ path('delegate_request_form') }}" class="btn btn-outline btn-primary w-full justify-center gap-2">
+                                <i class="ti ti-user-star"></i>
+                                <span>Postani delegat</span>
+                            </a>
+                        </div>
+                        <div class="divider m-0 px-6"></div>
+                    {% endif %}
+                    {# Delegate: show "Postani donator" if not donor #}
+                    {% if ('ROLE_DELEGATE' in app.user.getRoles) and not app.user.userDonor %}
+                        <div class="px-6 pt-3 pb-3 flex flex-col gap-4">
+                            <p class="text-xs text-gray-400">Želiš da se prijaviš kao donator?</p>
+                            <a href="{{ path('donor_request_form') }}" class="btn btn-outline btn-primary w-full justify-center gap-2">
+                                <i class="ti ti-user-plus"></i>
+                                <span>Postani donator</span>
+                            </a>
+                        </div>
+                        <div class="divider m-0 px-6"></div>
+                    {% endif %}
+                    <div class="px-6 pt-3 pb-6">
+                        <a href="{{ path('logout') }}" class="inline-flex justify-start items-center gap-2 text-base font-medium">
+                            <span>Odjavi se</span>
+                            <i class="ti ti-logout text-base"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </li>
+
+    {# Mobile: all links as vertical list, no dropdown #}
+    <li class="flex flex-col gap-1 lg:hidden">
+        {# Donor: Instrukcije za uplatu #}
+        {% if app.user and app.user.userDonor %}
+            <a href="{{ path('donor_transaction_list') }}" class="flex items-center gap-1 px-3 py-2 text-black hover:text-primary transition-colors">
+                <span class="ti ti-credit-card-pay text-xl"></span>
+                Instrukcije za uplatu
+            </a>
+        {% endif %}
+        {# Delegate: Postani delegat #}
+        {% if app.user and 'ROLE_DELEGATE' in app.user.getRoles %}
+            <a href="{{ path('delegate_request_form') }}" class="flex items-center gap-1 px-3 py-2 text-black hover:text-primary transition-colors">
+                <span class="ti ti-school text-xl"></span>
+                Postani delegat
+            </a>
         {% endif %}
 
-        {% if 'ROLE_DELEGATE' in app.user.getRoles %}
-            <li>
-                <a href="{{ path('delegate_damaged_educator_choose_period') }}" class="text-lg lg:text-base px-4 py-3 lg:py-2 lg:px-3 {{ additional_link_classes }}">
-                    <span class="ti ti-school text-xl"></span>
-                    Spisak oštećenih
+        {# Dropdown content, but expanded #}
+        {% if not app.user %}
+            <div class="flex flex-col gap-2 mt-2">
+                <div class="font-medium text-black">Zdravo</div>
+                <a href="{{ path('login') }}" class="btn btn-primary w-full">Prijavi se</a>
+                <div class="divider m-0"></div>
+                <a href="{{ path('donor_request_form') }}" class="btn btn-outline btn-primary w-full justify-center gap-2">
+                    <i class="ti ti-user-plus"></i>
+                    <span>Postani donator</span>
                 </a>
-            </li>
-        {% endif %}
-
-        {% if 'ROLE_ADMIN' in app.user.getRoles %}
-            <li>
-                <a href="{{ path('admin_home') }}" class="text-lg lg:text-base px-4 py-3 lg:py-2 lg:px-3 {{ additional_link_classes }}">
-                    <span class="ti ti-settings text-xl"></span>
-                    Admin Panel
+                <a href="{{ path('delegate_request_form') }}" class="btn btn-outline btn-primary w-full justify-center gap-2">
+                    <i class="ti ti-user-star"></i>
+                    <span>Postani delegat</span>
                 </a>
-            </li>
+            </div>
+        {% else %}
+            <div class="flex flex-col gap-2 mt-2">
+                <a href="{{ path('profile_edit') }}" class="flex items-center gap-2 text-black hover:text-primary font-medium">
+                    <i class="ti ti-user text-base"></i>
+                    Upravljaj nalogom
+                </a>
+                <a href="{{ path('profile_edit') }}" class="flex items-center gap-2 text-black hover:text-primary font-medium">
+                    <i class="ti ti-settings text-base"></i>
+                    Izmeni korisničke podatke
+                </a>
+                {% if app.user.userDonor and not ('ROLE_DELEGATE' in app.user.getRoles) %}
+                    <div>
+                        <p class="text-xs text-gray-400">Predstavljaš kolektiv u obustavi?</p>
+                        <a href="{{ path('delegate_request_form') }}" class="btn btn-outline btn-primary w-full justify-center gap-2 mt-1">
+                            <i class="ti ti-user-star"></i>
+                            <span>Postani delegat</span>
+                        </a>
+                    </div>
+                {% endif %}
+                {% if not app.user.userDonor and not ('ROLE_DELEGATE' in app.user.getRoles) %}
+                    <div>
+                        <p class="text-xs text-gray-400">Želiš da se prijaviš kao donator?</p>
+                        <a href="{{ path('donor_request_form') }}" class="btn btn-outline btn-primary w-full justify-center gap-2 mt-1">
+                            <i class="ti ti-user-plus"></i>
+                            <span>Postani donator</span>
+                        </a>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-400">Predstavljaš kolektiv u obustavi?</p>
+                        <a href="{{ path('delegate_request_form') }}" class="btn btn-outline btn-primary w-full justify-center gap-2 mt-1">
+                            <i class="ti ti-user-star"></i>
+                            <span>Postani delegat</span>
+                        </a>
+                    </div>
+                {% endif %}
+                {% if ('ROLE_DELEGATE' in app.user.getRoles) and not app.user.userDonor %}
+                    <div>
+                        <p class="text-xs text-gray-400">Želiš da se prijaviš kao donator?</p>
+                        <a href="{{ path('donor_request_form') }}" class="btn btn-outline btn-primary w-full justify-center gap-2 mt-1">
+                            <i class="ti ti-user-plus"></i>
+                            <span>Postani donator</span>
+                        </a>
+                    </div>
+                {% endif %}
+                <a href="{{ path('logout') }}" class="inline-flex justify-start items-center gap-2 text-base font-medium text-black hover:text-primary mt-2">
+                    <span>Odjavi se</span>
+                    <i class="ti ti-logout text-base"></i>
+                </a>
+            </div>
         {% endif %}
-
-        <li>
-            <a href="{{ path('profile_edit') }}" class="text-lg lg:text-base px-4 py-3 lg:py-2 lg:px-3 {{ additional_link_classes }}">
-                <span class="ti ti-user text-xl"></span>
-                Korisnički podaci
-            </a>
-        </li>
-
-        <li>
-            <a href="{{ path('logout') }}" class="text-lg lg:text-base px-4 py-3 lg:py-2 lg:px-3 {{ additional_link_classes }}">
-                <span class="ti ti-logout text-xl"></span>
-                Odjavi se
-            </a>
-        </li>
-    {% else %}
-        <li>
-            <a href="{{ path('login') }}" class="text-lg lg:text-base px-4 py-3 lg:py-2 lg:px-3 {{ additional_link_classes }}">
-                <span class="ti ti-user text-xl"></span>
-                Uloguj se
-            </a>
-        </li>
-    {% endif %}
+    </li>
 {% endmacro %}

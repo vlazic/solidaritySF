@@ -46,9 +46,13 @@
     <body data-theme="corporate">
         {% block navbar %}
             <div class="navbar bg-base-100 shadow-sm px-10 py-5">
-                <div class="flex-1 align-middle">
+                <div class="flex-1 align-middle flex items-center gap-2">
                     <a href="{{ path('home') }}">
                         <img src="{{ asset('image/logo.svg') }}" alt="Logo" class="w-12 h-12 rounded-lg bg-base-100">
+                    </a>
+                    <a href="{{ path('home') }}" class="ml-2 flex items-center gap-1 text-lg font-medium text-black hover:text-primary transition-colors">
+                        <span class="ti ti-home text-xl"></span>
+                        Početna
                     </a>
                 </div>
 
