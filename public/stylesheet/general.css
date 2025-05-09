@@ -21,6 +21,10 @@ table thead span.ti {
     .responsive-table thead {
         display: none;
     }
+    .responsive-table {
+        border: none !important;
+        border-radius: 0 !important;
+    }
     .responsive-table,
     .responsive-table tbody,
     .responsive-table tr,
@@ -29,16 +33,19 @@ table thead span.ti {
         width: 100%;
     }
     .responsive-table tr {
-        margin-bottom: 1.5rem;
-        border-bottom: 2px solid #e5e7eb;
+        margin-bottom: 0.75rem;
+        border: 1px solid #e5e7eb;
         background: #fff;
         border-radius: 0.5rem;
         box-shadow: 0 1px 2px rgba(0,0,0,0.03);
         padding: 0.5rem 0.5rem 0.5rem 0;
     }
     .responsive-table td {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
         position: relative;
-        padding-left: 50%;
+        padding-left: 0.75rem;
         min-height: 2.5rem;
         border: none;
         border-bottom: 1px solid #f3f4f6;
@@ -51,15 +58,21 @@ table thead span.ti {
     }
     .responsive-table td::before {
         content: attr(data-label);
-        position: absolute;
-        left: 0.75rem;
-        top: 0;
-        width: 45%;
+        position: static;
+        display: inline-block;
+        min-width: 7.5em;
         font-weight: 600;
         color: #6b7280;
         white-space: normal;
         font-size: 0.95em;
         padding-right: 0.5rem;
         text-align: left;
+        flex-shrink: 0;
+    }
+    .responsive-table td[data-label=""]::before {
+        display: none;
+    }
+    .responsive-table td[data-label=""] {
+        justify-content: center;
     }
 }
