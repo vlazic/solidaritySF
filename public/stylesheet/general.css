@@ -115,9 +115,45 @@ table thead span.ti {
 }
 
 /* Copy functionality styles */
+.copy-info {
+    display: none;
+}
+
+.copy-info.show {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    animation: fadeIn 1.5s ease;
+}
+
+.copy-info.show > span:first-child {
+    margin-top: 0.25rem;
+}
+
+.copy-info.show > span:last-child {
+    flex: 1;
+}
+
+.copy-info.show .font-bold {
+    margin-bottom: 0.25rem;
+}
+
 [data-copyable] {
-    cursor: pointer !important;
+    cursor: default;
     position: relative;
+}
+
+[data-copyable].copy-enabled {
+    cursor: pointer !important;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 /* Desktop tooltip styles */

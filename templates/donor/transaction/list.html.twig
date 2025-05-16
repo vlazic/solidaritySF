@@ -17,7 +17,7 @@
 
             {{ include('flashes.html.twig') }}
 
-            <div class="alert alert-info alert-soft mb-4">
+            <div class="alert alert-info alert-soft mb-4 copy-info">
                 <span class="ti ti-info-circle text-2xl"></span>
                 <span>
                     <span class="font-bold block">Kopiranje podataka</span>
@@ -183,6 +183,7 @@
 {% block javascripts %}
     {{ parent() }}
 
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
     <script>
         function openQrModal(transactionId) {
             const modal = document.getElementById('qr_modal');

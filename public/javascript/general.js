@@ -58,9 +58,18 @@ function loadSelect2() {
 }
 
 function initCopyTooltip() {
-    // Check if page has copyable elements
+    // Check if page has copyable elements and clipboard is supported
     const copyableElements = document.querySelectorAll('[data-copyable]');
-    if (copyableElements.length === 0) return;
+    if (copyableElements.length === 0 || !ClipboardJS.isSupported()) {
+        console.log('Copy functionality not available');
+        return;
+    }
+
+    // Show copy instructions
+    const copyInfo = document.querySelector('.copy-info');
+    if (copyInfo) {
+        copyInfo.classList.add('show');
+    }
 
     // Constants
     const HOVER_DELAY = 1000;
@@ -157,6 +166,7 @@ function initCopyTooltip() {
     }
 
     copyableElements.forEach(element => {
+        element.classList.add('copy-enabled');
         element.setAttribute('data-clipboard-text', element.textContent.trim());
 
         if (!isTouch) {
