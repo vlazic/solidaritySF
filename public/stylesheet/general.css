@@ -178,25 +178,3 @@ table thead span.ti {
         opacity: 1;
     }
 }
-
-/* Hidden textarea for copy functionality */
-.copy-textarea {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    padding: 0;
-    border: none;
-    outline: none;
-    box-shadow: none;
-    background: transparent;
-    opacity: 0;
-    font-size: 16px;
-    z-index: 9999;
-    user-select: text !important;
-    -webkit-user-select: text !important;
-    pointer-events: none;
-    input-mode: none;
-    touch-action: manipulation;
-}

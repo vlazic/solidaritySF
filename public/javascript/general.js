@@ -62,9 +62,6 @@ function initCopyTooltip() {
     const copyableElements = document.querySelectorAll('[data-copyable]');
     if (copyableElements.length === 0) return;
 
-    // Check if device supports hover
-    const isTouch = window.matchMedia('(hover: none)').matches;
-
     // Constants
     const HOVER_DELAY = 1000;
     const RESET_DELAY = 1500;
@@ -85,85 +82,8 @@ function initCopyTooltip() {
         }
     };
 
-    // Helper function for copying text
-    async function copyText(text, labels, isMobile = false) {
-        try {
-            // Try using Clipboard API
-            if (navigator.clipboard && window.isSecureContext) {
-                await navigator.clipboard.writeText(text);
-            } else {
-                // Fallback for non-secure context
-                const textArea = document.createElement('textarea');
-                textArea.value = text;
-
-                const isIOS = /ipad|iphone/i.test(navigator.userAgent);
-
-                // Make editable only on iOS where we need it
-                textArea.contentEditable = isIOS;
-                textArea.readOnly = !isIOS;
-
-                // Add styling
-                textArea.className = 'copy-textarea';
-                textArea.setAttribute('aria-hidden', 'true');
-
-                document.body.appendChild(textArea);
-
-                // Handle selection based on device
-                if (isIOS) {
-                    // iOS needs focus and selection UI
-                    textArea.focus();
-                    textArea.scrollIntoView(false);
-
-                    // Force iOS to show selection UI
-                    textArea.addEventListener('click', function() {
-                        textArea.setSelectionRange(0, textArea.value.length);
-                    });
-                    textArea.click();
-
-                    const range = document.createRange();
-                    range.selectNodeContents(textArea);
-                    const selection = window.getSelection();
-                    selection.removeAllRanges();
-                    selection.addRange(range);
-                    textArea.setSelectionRange(0, textArea.value.length);
-                } else {
-                    // Other devices just need selection without focus
-                    textArea.select();
-                }
-
-                // Small delay to ensure selection is complete
-                await new Promise(resolve => setTimeout(resolve, 100));
-
-                try {
-                    document.execCommand('copy');
-                } finally {
-                    textArea.remove();
-                }
-            }
-
-            // Show success message
-            tooltip.textContent = labels.success;
-            if (isMobile) {
-                showTooltip(null, true);
-                setTimeout(hideTooltip, RESET_DELAY);
-            } else {
-                setTimeout(() => {
-                    tooltip.textContent = labels.default;
-                }, RESET_DELAY);
-            }
-        } catch (err) {
-            console.error('Failed to copy text:', err);
-            tooltip.textContent = labels.error;
-            if (isMobile) {
-                showTooltip(null, true);
-                setTimeout(hideTooltip, RESET_DELAY);
-            } else {
-                setTimeout(() => {
-                    tooltip.textContent = labels.default;
-                }, RESET_DELAY);
-            }
-        }
-    }
+    // Check if device supports hover
+    const isTouch = window.matchMedia('(hover: none)').matches;
 
     // Create and append tooltip element
     const tooltip = document.createElement('div');
@@ -179,12 +99,8 @@ function initCopyTooltip() {
         document.body.appendChild(backdrop);
     }
 
-    // Add copy functionality to elements
-    let hoverTimeout;
-    let tapTimeout;
-    let selectedElement = null;
-
-    function showTooltip(element, immediate = false) {
+    function showTooltip(element, text) {
+        tooltip.textContent = text;
         if (isTouch) {
             backdrop.classList.add('show');
             tooltip.classList.add('show');
@@ -201,16 +117,54 @@ function initCopyTooltip() {
         if (backdrop) {
             backdrop.classList.remove('show');
         }
-        selectedElement = null;
+    }
+
+    // Add functionality based on device
+    let hoverTimeout;
+    let tapTimeout;
+    let selectedElement = null;
+    let clipboardInstance = null;
+
+    function initClipboard(element) {
+        // Clean up previous instance if exists
+        if (clipboardInstance) {
+            clipboardInstance.destroy();
+        }
+
+        clipboardInstance = new ClipboardJS(element);
+
+        clipboardInstance.on('success', () => {
+            showTooltip(element, isTouch ? LABELS.mobile.success : LABELS.desktop.success);
+            setTimeout(() => {
+                hideTooltip();
+                if (isTouch) {
+                    tooltip.textContent = LABELS.mobile.initial;
+                }
+            }, RESET_DELAY);
+        });
+
+        clipboardInstance.on('error', () => {
+            showTooltip(element, isTouch ? LABELS.mobile.error : LABELS.desktop.error);
+            setTimeout(() => {
+                hideTooltip();
+                if (isTouch) {
+                    tooltip.textContent = LABELS.mobile.initial;
+                }
+            }, RESET_DELAY);
+        });
+
+        return clipboardInstance;
     }
 
     copyableElements.forEach(element => {
+        element.setAttribute('data-clipboard-text', element.textContent.trim());
+
         if (!isTouch) {
             // Desktop behavior
             element.addEventListener('mouseover', () => {
                 clearTimeout(hoverTimeout);
                 hoverTimeout = setTimeout(() => {
-                    showTooltip(element);
+                    showTooltip(element, LABELS.desktop.default);
                 }, HOVER_DELAY);
             });
 
@@ -219,19 +173,19 @@ function initCopyTooltip() {
                 hideTooltip();
             });
 
-            element.addEventListener('click', async () => {
-                const textToCopy = element.textContent.trim();
-                copyText(textToCopy, LABELS.desktop);
+            element.addEventListener('click', (e) => {
+                clearTimeout(hoverTimeout);
+                initClipboard(element).onClick(e);
             });
         } else {
-            // Mobile behavior
-            element.addEventListener('click', async () => {
+            // Mobile behavior with double-tap
+            element.addEventListener('click', (e) => {
+                e.preventDefault();
                 clearTimeout(tapTimeout);
 
                 if (selectedElement === element) {
                     // Second tap - copy
-                    const textToCopy = element.textContent.trim();
-                    copyText(textToCopy, LABELS.mobile, true);
+                    initClipboard(element).onClick(e);
                     selectedElement = null;
                 } else {
                     // First tap - show tooltip
@@ -239,8 +193,7 @@ function initCopyTooltip() {
                         hideTooltip();
                     }
                     selectedElement = element;
-                    tooltip.textContent = LABELS.mobile.default;
-                    showTooltip(element, true);
+                    showTooltip(element, LABELS.mobile.default);
                     tapTimeout = setTimeout(hideTooltip, TAP_TIMEOUT);
                 }
             });
@@ -252,6 +205,7 @@ function initCopyTooltip() {
         document.addEventListener('click', (e) => {
             if (!e.target.hasAttribute('data-copyable')) {
                 hideTooltip();
+                selectedElement = null;
             }
         });
     }
