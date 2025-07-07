@@ -184,7 +184,21 @@ class CreateTransactionService
         return (int) $stmt->fetchOne();
     }
 
-    public function isUniversity(string $schoolType): bool
+    public function wontToDonateToSchool(UserDonor $userDonor, string $schoolType): bool
+    {
+        $isUniversity = $this->isUniversity($schoolType);
+        if (UserDonor::SCHOOL_TYPE_UNIVERSITY == $userDonor->getSchoolType() && !$isUniversity) {
+            return false;
+        }
+
+        if (UserDonor::SCHOOL_TYPE_EDUCATION == $userDonor->getSchoolType() && $isUniversity) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function isUniversity(string $schoolType): bool
     {
         if (preg_match('/Univerzitet|Akademija/i', $schoolType)) {
             return true;
