@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Repository\UserDonorRepository;
 use App\Repository\UserRepository;
 use App\Security\EmailVerifier;
+use App\Service\CreateTransactionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,7 +16,7 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class RegistrationController extends AbstractController
 {
-    public function __construct(private EmailVerifier $emailVerifier)
+    public function __construct(private EmailVerifier $emailVerifier, private CreateTransactionService $createTransactionService)
     {
     }
 
@@ -99,6 +100,8 @@ class RegistrationController extends AbstractController
             $action = $request->get('action');
             if ('donor' == $action) {
                 $userDonorRepository->sendSuccessEmail($user);
+
+                $this->createTransactionService->create($user->getUserDonor(), $user->getUserDonor()->getAmount());
 
                 return $this->redirectToRoute('donor_request_success');
             }

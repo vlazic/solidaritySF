@@ -5,7 +5,9 @@ namespace App\Controller\Donor;
 use App\Entity\Transaction;
 use App\Entity\User;
 use App\Form\ProfileTransactionConfirmPaymentType;
+use App\Form\TransactionCreateType;
 use App\Repository\TransactionRepository;
+use App\Service\CreateTransactionService;
 use App\Service\InvoiceSlipService;
 use App\Service\IpsQrCodeService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,7 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/instrukcije-za-uplatu', name: 'donor_transaction_')]
+#[Route(name: 'donor_transaction_')]
 #[IsGranted('ROLE_USER')]
 class TransactionController extends AbstractController
 {
@@ -23,10 +25,12 @@ class TransactionController extends AbstractController
         private EntityManagerInterface $entityManager,
         private InvoiceSlipService $invoiceSlipService,
         private IpsQrCodeService $qrCodeService,
+        private CreateTransactionService $createTransactionService,
+        private TransactionRepository $transactionRepository,
     ) {
     }
 
-    #[Route(name: 'list')]
+    #[Route('/instrukcije-za-uplatu', name: 'list')]
     public function list(Request $request, TransactionRepository $transactionRepository): Response
     {
         $criteria = ['user' => $this->getUser()];
@@ -56,7 +60,7 @@ class TransactionController extends AbstractController
         ]);
     }
 
-    #[Route('/ostampaj/{id}', name: 'print', requirements: ['id' => '\d+'])]
+    #[Route('/instrukcije-za-uplatu/ostampaj/{id}', name: 'print', requirements: ['id' => '\d+'])]
     public function print(Transaction $transaction): Response
     {
         /* @var User $user */
@@ -91,7 +95,7 @@ class TransactionController extends AbstractController
         );
     }
 
-    #[Route('/qr/{id}', name: 'qr', requirements: ['id' => '\d+'])]
+    #[Route('/instrukcije-za-uplatu/qr/{id}', name: 'qr', requirements: ['id' => '\d+'])]
     public function qr(Transaction $transaction): Response
     {
         /* @var User $user */
@@ -123,7 +127,7 @@ class TransactionController extends AbstractController
         ]);
     }
 
-    #[Route('/potvrdi-uplatu/{id}', name: 'confirm_payment', requirements: ['id' => '\d+'])]
+    #[Route('/instrukcije-za-uplatu/potvrdi-uplatu/{id}', name: 'confirm_payment', requirements: ['id' => '\d+'])]
     public function confirmPayment(Request $request, Transaction $transaction, EntityManagerInterface $entityManager): Response
     {
         /* @var User $user */
@@ -171,6 +175,38 @@ class TransactionController extends AbstractController
         return $this->render('donor/transaction/confirm_payment.html.twig', [
             'form' => $form->createView(),
             'transaction' => $transaction,
+        ]);
+    }
+
+    #[Route('/doniraj', name: 'create')]
+    public function create(Request $request)
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $userDonor = $user->getUserDonor();
+
+        $haveWaitingTransactions = $this->transactionRepository->count([
+            'user' => $user,
+            'status' => Transaction::STATUS_NEW,
+        ]);
+
+        $form = $this->createForm(TransactionCreateType::class, null, [
+            'haveWaitingTransactions' => $haveWaitingTransactions,
+        ]);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $amount = $form->get('amount')->getData();
+            $this->createTransactionService->create($userDonor, $amount);
+
+            $this->addFlash('success', 'Kreirane su ti instrukcije za uplatu, ostalo je samo da ih uplatiš i potvrdiš uplatu.');
+
+            return $this->redirectToRoute('donor_transaction_list');
+        }
+
+        return $this->render('donor/transaction/create.html.twig', [
+            'form' => $form->createView(),
+            'haveWaitingTransactions' => $haveWaitingTransactions,
         ]);
     }
 }
