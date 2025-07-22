@@ -134,15 +134,24 @@ class DamagedEducatorRepository extends ServiceEntityRepository
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
-    public function getSumAmount(bool $useCache): int
+    public function getMissingSumAmount(bool $useCache): int
     {
-        return $this->cache->get('damaged-educator-getSumAmount', function (ItemInterface $item) {
+        return $this->cache->get('damaged-educator-getMissingSumAmount', function (ItemInterface $item) {
             $item->expiresAfter(86400);
 
             $qb = $this->createQueryBuilder('e');
-            $qb = $qb->select('SUM(e.amount)');
+            $qb = $qb->select('SUM(e.amount)')
+                ->andWhere('e.status = :status')
+                ->setParameter('status', DamagedEducator::STATUS_NEW);
 
-            return (int) $qb->getQuery()->getSingleScalarResult();
+            $totalSumAmount = (int) $qb->getQuery()->getSingleScalarResult();
+            $totalDamagedEducatorConfirmedTransaction = $this->transactionRepository->getSumConfirmedAmountForActiveDamagedEducators();
+
+            if ($totalSumAmount <= $totalDamagedEducatorConfirmedTransaction) {
+                return 0;
+            }
+
+            return $totalSumAmount - $totalDamagedEducatorConfirmedTransaction;
         }, $useCache ? 1.0 : INF);
     }
 
